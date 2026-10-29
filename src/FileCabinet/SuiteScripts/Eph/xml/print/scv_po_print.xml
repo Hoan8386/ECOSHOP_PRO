@@ -1,0 +1,171 @@
+<?xml version = "1.0"?><!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+<head>
+    <link name="ScvFont" type="font" subtype="opentype" src="${libPdf.font.times?html}" src-bold="${libPdf.font.times_bold?html}" src-italic="${libPdf.font.times_italic?html}" src-bolditalic="${libPdf.font.times_bolditalic?html}" bytes="2" />
+    <style type="text/css">
+        ${libPdf.css}
+        .background-blue {
+            background-color: #8db3e2;
+        }
+        table.custom-border {
+            border-top: 1px solid black;   
+            border-bottom: 1px solid black;
+            border-left: 1px solid black; 
+            border-right: 1px solid black;
+        }
+    </style>
+    <macrolist>
+        <macro id="nlheader">
+            <table>
+                <tr>
+                    <td colspan="10"> ${jsonData.logo} </td>
+                    <td colspan="30"></td>
+                    <td colspan="60"><i><b>${subsidiary.legalname}</b></i><br/>
+                        <span>${subsidiary.mainaddress_text}</span>
+                    </td>
+                </tr>
+            </table>
+        </macro>
+        <macro id="nlfooter">
+            <table>
+                <tr>
+                    <td colspan="100" align="center">Page <pagenumber/> of <totalpages/></td>
+                </tr>
+            </table>
+        </macro>
+    </macrolist>
+</head>
+<body header="nlheader" header-height="10%" footer="nlfooter" footer-height="5%" padding="0.3in 0.3in 0in 0.3in" size="A4">
+    <table class="mt-8">
+        <tr>
+            <td colspan="100" class="align-center"><b>ĐƠN ĐẶT HÀNG / <i>PURCHASE ORDER</i></b></td>
+        </tr>
+        <tr>
+            <td colspan="100" class="align-center"><b>Số <i>(No.): ${jsonData.objBody.tranid}</i></b></td>
+        </tr>
+        <tr>
+            <td colspan="100" class="align-center"><b>Ngày <i>(Date): ${jsonData.objBody.trandate}</i></b></td>
+        </tr>
+        <tr class="mt-8">
+            <td colspan="100">Đơn Đặt Hàng này là một phần của Điều Khoản Chung Về Mua Hàng số ${record.tranid} ký ngày ${record.trandate}</td>
+        </tr>
+        <tr>
+            <td colspan="100"><i>The Purchase Order is a part of General Terms Of Purchase Of Goods No. ${record.tranid} dated ${record.trandate}</i></td>
+        </tr>
+    </table>
+    <table class="mt-8">
+        <tr>
+            <td colspan="50">
+                <table class="custom-border">
+                    <thead>
+                        <tr class="background-blue">
+                            <td colspan="50" align="center"><b>BÊN BÁN / <i>SELLER</i></b></td>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td colspan="20">Tên Công ty/<br/><i>Company name</i></td>
+                        <td colspan="30">${jsonData.objBody.seller_companyName}</td>
+                    </tr>
+                     <tr>
+                        <td colspan="20">Mã Công ty/<br/><i>Company Code</i></td>
+                        <td colspan="30">${jsonData.objBody.seller_companyCode}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="20">Mã số thuế/<i>Tax code</i></td>
+                        <td colspan="30">${jsonData.objBody.seller_taxcode}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="20">Địa chỉ/<i>Address</i></td>
+                        <td colspan="30">${jsonData.objBody.seller_add}</td>
+                    </tr>
+                </table>
+            </td>
+            <td colspan="5"></td>
+            <td colspan="45">
+                <table class="custom-border"> 
+                    <thead>
+                        <tr class="background-blue">
+                            <td colspan="45" align="center"><b>GIAO HÀNG / <i>DELIVERY</i></b></td>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td colspan="20">Địa điểm/<i>Location</i></td>
+                        <td colspan="25">${jsonData.objBody.delivery_location_add}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="20">Ngày giao hàng/<i>Delivery Date</i></td>
+                        <td colspan="25">${jsonData.objBody.delivery_time}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="20">Thời hạn thanh toán/<i>Payment Term</i></td>
+                        <td colspan="25">${jsonData.objBody.delivery_paymenTerm}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table class="mt-8">
+        <tr>
+            <td colspan="100" class="align-center"><b>CHI TIẾT ĐƠN HÀNG / <i>ORDER DETAILS</i></b></td>
+        </tr>
+    </table>
+    <table class="border-table mt-8">
+        <thead class ="font-weight-bold background-blue">
+            <tr>
+                <td width="5%">STT<br/><i>No.</i></td>
+                <td width="11%">Mã SP<br/><i>UPC Code</i></td>
+                <td width="12%">Mã NCC<br/><i>Supplier Barcode</i></td>
+                <td width="24%">Tên hàng hóa / dịch vụ<br/><i>Name of Goods / Services</i></td>
+                <td width="7%">ĐVT<br/><i>Unit</i></td>
+                <td width="10%">Đơn giá<br/>Rate<br/><i>(VND)</i></td>
+                <td width="9%">Số lượng<br/><i>Quantity</i></td>
+                <td width="9%">Thuế suất<br/><i>Tax Rate</i></td>
+                <td width="13%">Thành tiền trước VAT<br/><i>Amount Excluding VAT (VND)</i></td>
+            </tr>
+        </thead>
+        <tbody>
+            <#list jsonData.arrSSPoPrint as obj>
+               <tr>
+                    <td align="center">${obj.stt}</td>
+                    <td align="right">${obj.upccode}</td>
+                    <td align="right">${obj.supplier_barcode}</td>
+                    <td>${obj.product}</td>
+                    <td align="center">${obj.unit}</td>
+                    <td align="right">${obj.rate}</td>
+                    <td align="center">${obj.qty}</td> 
+                    <td align="right">${obj.tax_rate}</td>
+                    <td align="right">${obj.amt}</td>
+                </tr>
+            </#list>
+            <tr class="font-weight-bold">
+                <td align="right" colspan="8">Tổng tiền chưa bao gồm thuế/<i>Subtotal excluding tax</i></td> 
+                <td align="right">${jsonData.objBody.total}</td>
+            </tr>
+            <tr class="font-weight-bold">
+                <td align="right" colspan="8">Tổng tiền thuế/<i>Total tax</i></td> 
+                <td align="right">${jsonData.objBody.tax}</td>
+            </tr>
+            <tr class="font-weight-bold">
+                <td align="right" colspan="8">Tổng thành tiền bao gồm thuế/<i>Total including tax</i></td> 
+                <td align="right">${jsonData.objBody.grandTotal}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div display="block" class="mt-8">
+        <table>
+            <tr>
+                <td align="center" colspan="100"><b>CHỨNG TỪ DO MÁY TÍNH TẠO KHÔNG CẦN  KÝ TÊN</b></td>
+            </tr>
+            <tr>
+                <td align="center" colspan="100"><b><i>DOCUMENT GENERATED BY COMPUTER, NO SIGNATURE REQUIRED</i></b></td>
+            </tr>
+            <tr>
+                <td colspan="100"><b>Lưu ý/<i>Note:</i></b></td>
+            </tr>
+            <tr>
+                <td colspan="100">${jsonData.objBody.note}</td>
+            </tr>
+        </table>
+    </div>   
+</body>
+</pdf>

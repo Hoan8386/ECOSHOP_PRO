@@ -1,0 +1,107 @@
+<?xml version = "1.0"?><!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+<head>
+    <link name="ScvFont" type="font" subtype="opentype" src="${libPdf.font.times?html}" src-bold="${libPdf.font.times_bold?html}" src-italic="${libPdf.font.times_italic?html}" src-bolditalic="${libPdf.font.times_bolditalic?html}" bytes="2" />
+    <style type="text/css">
+        ${libPdf.css}
+        .large-size {
+            font-size: 11pt;
+        }
+        .medium-size {
+            font-size: 10pt;
+        }
+        .small-size {
+            font-size: 8.5pt;
+        }
+        .overline {
+          text-decoration: overline;
+        }
+    </style>
+    <macrolist>
+      <macro id="nlfooter">
+        <table class="medium-size">
+          <tr>
+            <td colspan="13" class="border-b"></td>
+            <td colspan="63"></td>
+            <td colspan="23" class="border-b"></td>
+          </tr>
+          <tr>
+            <td colspan="50" class="align-left"><p class="overline">Vendor Signature</p></td>
+            <td colspan="26"></td>
+            <td colspan="24" class="align-left"><p class="overline">Company Signature and Stamp
+            <br />Name: <br />Date:</p></td>
+          </tr>
+        </table>
+      </macro>
+    </macrolist>
+</head>
+<body footer="nlfooter" footer-height="40px"  padding="0.25in" size="A4">
+  <table>
+    <tr>
+      <td colspan="46" class="large-size"><b>${jsonData.objBody.subsidiary_nm?html}</b></td>
+      <td colspan="1"></td>
+      <td colspan="30">
+        <table class="small-size table-children">
+          <tr>
+            <td colspan="100"><p>${jsonData.objBody.subsidiary_cn?html}, ${subsidiary.mainaddress_text}</p></td>
+          </tr>
+          <tr>
+            <td colspan="50"><p>Tel: ${jsonData.objBody.subsidiary_tel?html}</p></td>
+            <td colspan="50"><p>Fax: ${jsonData.objBody.subsidiary_fax?html}</p></td>
+          </tr>
+        </table>
+      </td>
+      <td colspan="1"></td>
+      <td colspan="22" class="valign-bottom large-size"><b>PURCHASE RETURN</b></td>
+    </tr>
+  </table>
+  <table class="mt-8">
+    <tr>
+        <td colspan="49" class="border">
+            <table class="table-children medium-size p-4">
+                <tr><td colspan="2"><p><b>SUPPLIER DETAILS: </b></p></td></tr>
+                <tr><td colspan="2"><p><b>NAME: </b>${jsonData.objBody.vendor_name?html}</p></td></tr>
+                <tr><td colspan="2"><p><b>CODE: </b>${jsonData.objBody.vendor_code?html}</p></td></tr>
+                <tr><td colspan="2"><p><b>ADDRESS: </b>${jsonData.objBody.vendor_address?html}</p></td></tr>
+                <tr>
+                    <td><p><b>TEL: </b>${jsonData.objBody.vendor_tel?html}</p></td>
+                    <td><p><b>FAX: </b>${jsonData.objBody.vendor_fax?html}</p></td>
+                </tr>
+            </table>
+        </td>
+        <td colspan="2"></td>
+        <td colspan="49" class="border">
+            <table class="table-children medium-size p-4">
+                <tr><td><p><b>TRAN NO.: </b>${jsonData.objBody.tranid?html}</p></td></tr>
+                <tr><td><p><b>DATE: </b>${record.trandate?string("dd/MM/yyyy")}</p></td></tr>
+                <tr><td><p><b>PO NO.: </b>${jsonData.objBody.po_number?html}</p></td></tr>
+            </table>
+        </td>
+    </tr>
+  </table>
+  <table class="mt-8 border-table medium-size">
+    <thead>
+        <tr>
+            <td width="10%"><p><b>No.</b></p></td>
+            <td width="18%"><p><b>Stock Code</b></p></td>
+            <td width="50%"><p><b>Description</b></p></td>
+            <td width="22%"><p><b>Qty</b></p></td>
+            <!-- <td width="15%"><p><b>Unit Price</b></p></td>
+            <td width="15%"><p><b>Amount</b></p></td> -->
+        </tr>
+    </thead>
+    <tbody>
+        <#list jsonData.arrVRA as item>
+            <tr>
+                <td class="align-center"><p>${item?index + 1}</p></td>
+                <td class="align-center"><p>${item.item_upccode?html}</p></td>
+                <td class="align-left"><p>${item.memo?html}</p></td>
+                <td class="align-right"><p>${item.quantity?html}</p></td>
+                <!-- <td class="align-right"><p>${item.rate?html}</p></td>
+                <td class="align-right"><p>${item.amount?html}</p></td> -->
+            </tr>
+        </#list>
+    </tbody>
+  </table>
+</body>
+</pdf>

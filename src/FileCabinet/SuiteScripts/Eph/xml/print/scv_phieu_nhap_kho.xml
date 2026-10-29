@@ -1,0 +1,211 @@
+<?xml version="1.0"?><!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+<head>
+  <link name="Arial" type="font" subtype="opentype" src="${libPdf.font.times?html}" src-bold="${libPdf.font.times_bold?html}" src-italic="${libPdf.font.times_italic?html}" src-bolditalic="${libPdf.font.times_bolditalic?html}" bytes="2" />
+  <#setting date_format="dd-MMM-yyyy"/>
+    <style type="text/css">table {
+            <#if .locale == "zh_CN">
+                font-family: stsong, sans-serif;
+            <#elseif .locale == "zh_TW">
+                font-family: msung, sans-serif;
+            <#elseif .locale == "ja_JP">
+                font-family: heiseimin, sans-serif;
+            <#elseif .locale == "ko_KR">
+                font-family: hygothic, sans-serif;
+            <#elseif .locale == "ru_RU">
+                font-family: verdana;
+            <#else>
+                font-family: Arial, sans-serif;
+            </#if>
+                font-size: 11pt;
+                table-layout: fixed;
+            }
+       body{
+         font-family: Arial, sans-serif;
+         font-size:10pt;
+      }
+      table{
+         border-collapse: collapse;
+         table-layout:fixed;
+      }
+      .header {
+        font-weight: bold;
+        padding-right: 10px;
+      }
+      .header_2 {
+        text-align: center;
+        font-size: 9pt;
+      }
+      .title {
+        font-size: 14pt;
+      }
+      .item {
+        margin-top: 10px;
+      }
+      .item td {
+        border-collapse: collapse;
+        vertical-align: middle;
+        border: 0.5px solid #000;
+      }
+      .item td p {
+        text-align: center;
+      }
+      .fontw {
+        font-weight: bold;
+      }
+      .impacts {
+        vertical-align: middle;
+      }
+      .table-header td {
+        vertical-align: middle;
+      }
+</style>
+</head>
+<body size="A4" padding="0.25in 0.25in 0.25in 0.25in">
+  <table width="100%" align ="center" border="None" cellspacing="0" cellpadding="0" height="50%" class="table-header">
+      <tr>
+        <td width="60%" class="tduppercase" align="left"><p align="left"><b>${subsidiary.legalname?upper_case}</b><br /><span font-size="9.5pt">${subsidiary.mainaddress_text}</span></p></td>
+        <td width="6%"></td>
+        <td width="34%" align="center"><p align="center"><b>Mẫu số: 01 - VT</b><br /><span font-size="9pt"><i>(Ban hành theo Thông tư số 200/2014/TT-BTC <br /> Ngày 22/12/2014 của Bộ Tài chính)</i></span></p></td>
+      </tr>
+  </table>
+    <table width="100%" margin-top="15px">
+      <tr>
+        <td width="30%"></td>
+        <td width="40%"></td>
+        <td width="10%"></td>
+        <td width="20%"></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td align="center">
+          <table>
+            <tr>
+              <td align="center"><span class="title"><b>PHIẾU NHẬP KHO</b></span></td>
+            </tr>
+            <tr>
+              <td align="center"><span>Ngày ${record.trandate?string.dd} tháng ${record.trandate?string.MM} năm ${record.trandate?string.yyyy}</span></td>
+            </tr>
+            <tr>
+              <td align="center"><span>Số: <#if record.tranid?has_content>${record.tranid}<#else>${record.transactionnumber}</#if></span></td>
+            </tr>
+          </table>
+        </td>
+        <td></td>
+        <td>
+          <#if record.type != 'cutrprch120'>
+            <table width="100%" class="impacts">
+              <tr><td width="20%"></td><td width="70%"></td></tr>
+              <tr>
+                <td colspan="2" align="center"><span class="title"><b>&nbsp;</b></span></td>
+              </tr>
+              <tr>
+                <td align="left"><span>Nợ: </span></td>
+                <#assign index = 0>
+                  <td align="left" class="impact">${jsonData.account_debit}
+                  </td>
+                  </tr>
+              <tr>
+                <td align="left"><span>Có: </span></td>
+                <td align="left" class="impact">
+                  <#if record.type == 'invadjst'>${record.account?substring(0, 4)}
+                    <#else>
+                      <#if record.createdfrom.type == 'Transfer Order'>
+                        1512
+                        <#elseif entityRec.payablesaccount?has_content>${entityRec.payablesaccount?substring(0, 4)}
+                        <#else>3311
+                      </#if>
+                   </#if></td>
+                  </tr>
+            </table>
+              </#if>
+        </td>
+      </tr>
+  </table>
+  <table width="100%">
+    <tr><td><p>- Họ và tên người giao: <#if record.type == "itemrcpt">${record.custbody_scv_ir_shipper}<#else>${entityRec.custentity_scv_legal_name}</#if></p></td></tr>
+    <tr><td><p>- Theo hóa đơn số........ ngày ${record.trandate?string.dd}/${record.trandate?string.MM}/${record.trandate?string.yyyy} của ${entityRec.custentity_scv_legal_name}</p></td></tr>
+    <#if record.type == "itemrcpt"><tr><td><p>- Ghi chú: ${record.memo}</p></td></tr></#if>
+  </table>
+  <table width="100%">
+    <tr>
+      <td width="55%"><p>- Nhập tại kho: <#if record.type == 'invadjst'>${record.adjlocation}<#elseif record.type == "itemrcpt">${record.location?split(":")[1]}<#else>${record.location}</#if></p></td>
+      <td width="45%"><p>Địa điểm: ${subAddress.city}</p></td>
+    </tr>
+    <tr><td colspan="2"><p>- Chứng từ liên quan: ${record.createdfrom.tranid}</p></td></tr>
+  </table>
+  <table width="100%" class="item">
+    <thead font-weight="bold">
+      <tr>
+        <td width="5%" align="center" rowspan="2"><p>STT</p></td>
+        <td width="26%" align="center" rowspan="2"><p>Item</p></td>
+        <td width="27%" align="center" rowspan="2"><p>Tên, nhãn hiệu, quy cách, phẩm chất vật tư, dụng cụ sản phẩm, hàng hóa</p></td>
+        <td width="12%" align="center" rowspan="2"><p>Mã số</p></td>
+        <td width="10%" align="center" rowspan="2"><p>Đơn vị tính</p></td>
+        <td width="20%" align="center" colspan="2"><p>Số lượng</p></td>
+      </tr>
+      <tr>
+        <td align="center"><p>Theo chứng từ</p></td>
+        <td align="center"><p>Thực nhập</p></td>
+      </tr>
+      <tr>
+        <td align="center"><p>A</p></td>
+        <td align="center"><p>B</p></td>
+        <td align="center"><p>C</p></td>
+        <td align="center"><p>D</p></td>
+        <td align="center"><p>1</p></td>
+        <td align="center"><p>2</p></td>
+        <td align="center"><p>3</p></td>
+      </tr>
+    </thead>
+    <#assign stt= 0>
+    <#list jsonData.bodyData as item>
+         <tr font-size="9.5pt">
+            <td align="center"><p>${item.stt}</p></td>
+            <td align="left"><p style="text-align: left;">${item.itemname?html}</p></td>
+            <td align="left"><p style="text-align: left;">${item.description?html}</p></td>
+            <td align="center"><p style="word-break: break-all;">${item.item_code}</p></td>
+            <td align="center"><p>${item.units}</p></td>
+            <td align="center"><p></p></td>
+            <td align="center"><p>${item.quantity}</p></td>
+          </tr>
+    </#list>
+  </table>
+  <table width="100%" margin-top="10px">
+    <tr>
+      <td width="30%"><p>- Số chứng từ gốc kèm theo: </p></td>
+      <td width="70%"><p style="width:100%;border-bottom: 0.5px dotted black;vertical-align:bottom;"></p></td>
+    </tr>
+    <tr>
+      <td align="right" colspan="2"><p>Ngày.....tháng.....năm........</p></td>
+    </tr>
+  </table>
+  <table width="100%">
+    <tr class="fontw">
+      <td width="23%" align="center"><p>Người lập phiếu</p></td>
+      <td width="23%" align="center"><p>Người giao hàng</p></td>
+      <td width="23%" align="center"><p>Thủ kho</p></td>
+      <td width="29%" align="center"><p>Kế toán trưởng</p></td>
+    </tr>
+    <tr>
+      <td align="center"><p><i>(Ký, họ tên)</i></p></td>
+      <td align="center"><p><i>(Ký, họ tên)</i></p></td>
+      <td align="center"><p><i>(Ký, họ tên)</i></p></td>
+      <td align="center" class="fontw"><p font-size="9.5pt">(Hoặc bộ phận có nhu cầu nhập)</p></td>
+    </tr>
+    <tr>
+      <td align="center"><p></p></td>
+      <td align="center"><p></p></td>
+      <td align="center"><p></p></td>
+      <td align="center"><p><i>(Ký, họ tên)</i></p></td>
+    </tr>
+    <tr height="7%"></tr>
+    <tr class="fontw">
+      <td align="center"><p align="center"><#if record.type != 'cutrprch120'>${record.custbody_scv_created_by.custentity_scv_legal_name}<#else>${record.custbody_scv_employee_ycxvt.custentity_scv_legal_name}</#if></p></td>
+      <td align="center"><p></p></td>
+      <td align="center"><p></p></td>
+      <td align="center"><p align="center">${subsidiary.custrecord_scv_chief_accountant}</p></td>
+    </tr>
+  </table>
+</body>
+</pdf>

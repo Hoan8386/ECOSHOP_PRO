@@ -1,0 +1,81 @@
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<!-- font-family: "Comic Sans MS", cursive, sans-serif; -->
+<style>
+    .scvOlCustom {
+        font-size: 14px;
+        width: 100%;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-family: 'Open Sans';
+    }
+
+    .scvOlCustom li {
+        list-style-position: inside;
+        list-style-type: none;
+        padding: 3px 6px;
+    }
+
+    .scvOlCustom li span {
+        text-decoration: none;
+        color: #255599;
+        cursor: pointer;
+    }
+
+    .scvOlCustom li span:hover {
+        text-decoration: underline;
+        color: #255599;
+    }
+
+    .scvOlCustom li:nth-child(even) {
+        background-color: #efeefe;
+    }
+</style>
+<ol class="scvOlCustom" id="olRenderListSetup"></ol>
+<script>
+    resizePortlet();
+    const URLSUITELET = nlapiResolveURL('SUITELET', 'customscript_scv_sl_mass_approval', 'customdeploy_scv_sl_mass_approval');
+
+    var olElement = document.querySelector('#olRenderListSetup');
+    $.ajax({
+        url: "/app/site/hosting/scriptlet.nl?script=customscript_scv_sl_mass_approval&deploy=customdeploy_scv_sl_mass_app_count_ss",
+        type: "GET",
+        data: {
+            action: "all",
+        },
+        dataType: "json"
+    }).done(function (objRes) {
+        let arrData = objRes.data;
+        sortArayOfObject(arrData, "wha_setup_id");
+        for (var i = 0; i < arrData.length; i++) {
+            var url = URLSUITELET + '&whasetupid=' + arrData[i].wha_setup_id;
+            olElement.innerHTML += `<li><span onclick="redirectSuitelet(this)" redirect="${url}">${arrData[i].name} <b>(${arrData[i].count})</b></span></li>`;
+        }
+        resizePortlet();
+    });
+
+    function redirectSuitelet(e) {
+        window.open("" + e.getAttribute("redirect") + "");
+    }
+
+    function sortArayOfObject(arrayOfObjects, field) {
+        arrayOfObjects.sort(function (a, b) {
+            var x = a[field];
+            var y = b[field];
+            if (!!x) {
+                x = x.toLowerCase();
+            }
+            if (!!y) {
+                y = y.toLowerCase();
+            }
+            return x < y ? -1 : x > y ? 1 : 0;
+        });
+    }
+
+    // resize portlet
+    function resizePortlet() {
+        setTimeout(function () {
+            nlapiResizePortlet();
+            resizePortlet();
+        }, 500);
+    }
+</script>
