@@ -1,0 +1,215 @@
+<?xml version = "1.0"?><!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+<head>
+    <link name="ScvFont" type="font" subtype="opentype" src="${libPdf.font.times?html}" src-bold="${libPdf.font.times_bold?html}" src-italic="${libPdf.font.times_italic?html}" src-bolditalic="${libPdf.font.times_bolditalic?html}" bytes="2" />
+    <style type="text/css">
+        ${libPdf.css}
+        body, table { font-size: 9pt; }
+        .text-red { color: #b31b1f; }
+        .info td { padding: 1px 0; vertical-align: top; }
+        .note p { margin: 0; padding: 2px 0; }
+        table.border-table td { padding: 2px 3px; font-size: 8pt; }
+        table.border-table thead td { font-size: 8pt; }
+        table.border-table thead td, table.border-table thead td p { align: left; text-align: left; }
+    </style>
+    <macrolist>
+        <macro id="nlfooter">
+            <table class="fs-6" style="color: white; background-image: url('${jsonData.imgFooterUrl?html}'); background-size: 8.27in 34mm; background-repeat: no-repeat; margin-left: -0.3in; width: 8.27in; height: 34mm;">
+                <tr height="70px">
+                    <td></td>
+                </tr>
+                <tr>
+                    <td valign="top" style="padding: 0;">
+                        <table class="fs-6" style="color: white; width: 100%;">
+                            <tr>
+                                <td colspan="3" style="padding: 1px 0;"></td>
+                                <td colspan="97" align="left" style="padding: 1px 0;">
+                                    <b style="font-size: 8pt;">ECO-SHOP MARKETING BERHAD</b>
+                                    ${subsidiary.custrecord_scv_company_brnumber} (${subsidiary.custrecord_scv_company_old_brnumber})
+                                    TIN: C ${subsidiary.federalidnumber}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="padding: 1px 0;"></td>
+                                <td colspan="97" align="left" style="padding: 1px 0;">
+                                    <b>HEAD OFFICE:</b> ${subsidiary.mainaddress_text}
+                                    <b>T</b> ${subsidiary.custrecord_scv_sub_phone_no}
+                                    <b>F</b> ${subsidiary.fax}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="padding: 1px 0;"></td>
+                                <td colspan="72" align="left" valign="middle" style="padding: 1px 0;">
+                                    <b>CORPORATE OFFICE:</b> ${subsidiary.custrecord_scv_sub_corp_office_address?replace("\n", ", ")}
+                                    <b>T</b> ${subsidiary.custrecord_scv_sub_corp_office_phoneno}
+                                </td>
+                                <td colspan="20" valign="middle" align="right" style="padding: 1px 0;"><b style="font-size: 10pt;">eco-shop.com.my</b></td>
+                                <td colspan="5" style="padding: 1px 0;"></td>
+                            </tr>
+                            ${libPdf.rowcol100}
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </macro>
+    </macrolist>
+</head>
+<body footer="nlfooter" footer-height="34mm" padding="0.3in 0.3in 0in 0.3in" size="A4">
+    <table>
+        <tr>
+            <td colspan="30" valign="middle">${jsonData.logo}</td>
+            <td colspan="50" valign="middle"><span class="fs-20 font-weight-bold text-red">Purchase Order</span></td>
+            <td colspan="20" valign="middle"><span class="fs-16 font-weight-bold text-red">MAKE<br/>LIFE<br/>EASIER</span></td>
+        </tr>
+    </table>
+    <table class="info" style="margin-top: 10px;">
+        <tr>
+            <td colspan="55">
+                <table class="info">
+                    <tr><td colspan="100"><p>To</p></td></tr>
+                    <tr>
+                        <td colspan="30"><p>Name</p></td>
+                        <td colspan="3"><p>:</p></td>
+                        <td colspan="67"><p>${entity.custentity_scv_legal_name}</p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="30"><p>Code</p></td>
+                        <td colspan="3"><p>:</p></td>
+                        <td colspan="67"><p>${entity.nameorig}</p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="30"><p>Tax ID</p></td>
+                        <td colspan="3"><p>:</p></td>
+                        <td colspan="67"><p>${entity.custentity_scv_tax_number}</p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="30"><p>Contact</p></td>
+                        <td colspan="3"><p>:</p></td>
+                        <td colspan="67"><p>${entity.custentity_scv_phone_no}</p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="30"><p>Supplier Address</p></td>
+                        <td colspan="3"><p>:</p></td>
+                        <td colspan="67"><p>${entity.defaultaddress}</p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="30" style="padding-top: 8px;"><p>Special Message</p></td>
+                        <td colspan="3" style="padding-top: 8px;"><p>:</p></td>
+                        <td colspan="67" style="padding-top: 8px;"><p>${jsonData.objBody.memo}</p></td>
+                    </tr>
+                </table>
+            </td>
+            <td colspan="5"></td>
+            <td colspan="40">
+                <table class="info">
+                    <tr>
+                        <td colspan="45"><p>PO Number</p></td>
+                        <td colspan="5"><p>:</p></td>
+                        <td colspan="50"><p>${jsonData.objBody.tranid}</p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="45"><p>PO Date</p></td>
+                        <td colspan="5"><p>:</p></td>
+                        <td colspan="50"><p>${jsonData.objBody.trandate}</p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="45"><p>Delivery Date</p></td>
+                        <td colspan="5"><p>:</p></td>
+                        <td colspan="50"><p>${jsonData.objBody.delivery_date}</p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="45"><p>PO Expired Date</p></td>
+                        <td colspan="5"><p>:</p></td>
+                        <td colspan="50"><p>${jsonData.objBody.expired_date}</p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="45"><p>Page</p></td>
+                        <td colspan="5"><p>:</p></td>
+                        <td colspan="50"><p><pagenumber/> / <totalpages/></p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="45" style="padding-top: 8px;"><p>Delivery To</p></td>
+                        <td colspan="5" style="padding-top: 8px;"><p>:</p></td>
+                        <td colspan="50" style="padding-top: 8px;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="100"><p>${location.mainaddress_text}</p></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table class="border-table" style="margin-top: 10px;">
+        <thead>
+            <tr>
+                <td width="4%" align="left">No.</td>
+                <td width="9%" align="left">SKU/Product Barcode</td>
+                <td width="9%" align="left">Old SKU/Product Barcode</td>
+                <td width="18%" align="left">Item Description</td>
+                <td width="6%" align="left">Order Carton</td>
+                <td width="5%" align="left">Pack Size</td>
+                <td width="6%" align="left">UOM</td>
+                <td width="7%" align="left">Total Quantity</td>
+                <td width="9%" align="left">Unit Price (RM)</td>
+                <td width="9%" align="left">Total Amount Before Tax (RM)</td>
+                <td width="8%" align="left">Total Tax Amount (RM)</td>
+                <td width="10%" align="left">Total Amount After Tax (RM)</td>
+            </tr>
+        </thead>
+        <tbody >
+            <#list jsonData.arrLine as obj>
+            <tr class="fs-">
+                <td align="center">${obj.stt}</td>
+                <td>${obj.itemid}</td>
+                <td>${obj.supplier_barcode}</td>
+                <td>${obj.description}</td>
+                <td align="right">${obj.quantity}</td>
+                <td align="right">${obj.pack_size}</td>
+                <td align="center">${obj.uom_carton}</td>
+                <td align="right">${obj.total_qty}</td>
+                <td align="right">${obj.rate}</td>
+                <td align="right">${obj.amount}</td>
+                <td align="right">${obj.taxamount}</td>
+                <td align="right">${obj.grossamount}</td>
+            </tr>
+            </#list>
+            <#-- Total + note nằm chung 1 row không được ngắt trang: thiếu chỗ thì cả khối xuống trang sau (header tự lặp lại) -->
+            <tr style="page-break-inside: avoid;">
+                <td colspan="12" style="padding: 0; border: none;">
+                    <table class="border-table" width="100%">
+                        <tbody>
+                            <tr>
+                                <td width="4%" style="padding: 0; border: none;"></td>
+                                <td width="9%" style="padding: 0; border: none;"></td>
+                                <td width="9%" style="padding: 0; border: none;"></td>
+                                <td width="18%" style="padding: 0; border: none;"></td>
+                                <td width="6%" style="padding: 0; border: none;"></td>
+                                <td width="5%" style="padding: 0; border: none;"></td>
+                                <td width="6%" style="padding: 0; border: none;"></td>
+                                <td width="7%" style="padding: 0; border: none;"></td>
+                                <td width="9%" style="padding: 0; border: none;"></td>
+                                <td width="9%" style="padding: 0; border: none;"></td>
+                                <td width="8%" style="padding: 0; border: none;"></td>
+                                <td width="10%" style="padding: 0; border: none;"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="8" style="border: none;"></td>
+                                <td align="right" class="font-weight-bold" style="border: none;"><p align="right" style="text-align: right;">Total Amount (RM)</p></td>
+                                <td align="right" >${jsonData.objBody.totalAmt}</td>
+                                <td align="right" >${jsonData.objBody.totalTax}</td>
+                                <td align="right" >${jsonData.objBody.totalGross}</td>
+                            </tr>
+                            <#if jsonData.objBody.purchase_note?has_content>
+                            <tr><td colspan="12" style="border: none; padding: 15px 0 0 0; font-size: 9pt;">Important notes :</td></tr>
+                            <tr>
+                                <td colspan="12" class="note" style="border: none; padding: 0 0 0 15px; font-size: 9pt;">${jsonData.objBody.purchase_note}</td>
+                            </tr>
+                            </#if>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</pdf>

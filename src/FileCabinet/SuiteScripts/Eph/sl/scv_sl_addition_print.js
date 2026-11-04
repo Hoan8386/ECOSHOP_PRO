@@ -13,7 +13,9 @@ define([
 
     '../cons/scv_cons_search_po_print.js',
     '../cons/scv_cons_search_vra_print.js',
-    '../cons/scv_cons_search_vas_itf_itr_cost.js'
+    '../cons/scv_cons_search_vas_itf_itr_cost.js',
+    '../common/scv_common_print_po.js',
+
 ],(
     render, search, record, query, config, libPdf, 
     lbf, libAmt,
@@ -25,7 +27,8 @@ define([
 
     constSearchPOPrint, 
     searchVRAPrint,
-    constSearchItfItrCost
+    constSearchItfItrCost,
+    commonPrintPo
 ) => {
     /**
      * Defines the Suitelet script trigger point.
@@ -43,6 +46,9 @@ define([
         switch (printfile) {
             case "scv_po_print":
                 printPoPrint(rec, renderer, objDefSub.record);
+                break;
+            case "scv_print_po":
+                printPrintPo(rec, renderer, objDefSub.record);
                 break;
             case "scv_vra_print":
                 printVRAPrint(rec, renderer);
@@ -134,6 +140,10 @@ define([
 
         result = constSearchPOPrint.getDataSource(myFilters);
         return result;
+    }
+
+    const printPrintPo = (rec, renderer, subsidiaryRec) => {
+        commonPrintPo.addDataSource(rec, renderer, subsidiaryRec);
     }
 
     const printVasPhieuNhapKho = (_curRec, renderer) => {

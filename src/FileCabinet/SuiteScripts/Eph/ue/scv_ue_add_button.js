@@ -9,6 +9,7 @@
  *  13 Jan 2026         Khanh Tran              Nút 'Close' tại 'Purchase Order', 'Intercompany Transfer Order', 'Transfer Order'from mr.Quân (https://app.clickup.com/t/86d1jnrr5)
  *  28 May 2026         Phu Pham                Add Button 'Compare 1st Date' trên màn hình Item Location Configuration.
  *  24 Jul 2026         Phu Pham                Move code chức năng Approval Item từ DM sang EPH from mr. Đại (https://app.clickup.com/t/3773072/86d1b1bup)
+ *  29 Otc 2026         Thanh Hoan              Add button Purchase Order  tại 'Purchase Order', from mrs.Ngoc(https://app.clickup.com/t/3773072/14yhnhmh4cd)
  */
 /**
  * @NApiVersion 2.1
@@ -57,6 +58,7 @@ define([
                     break;
                 case "purchaseorder":
                     addBtnPrintPdf(form, newRec, arrBtnPrint, 'custpage_po_print', 'PO Print', 'scv_po_print');
+                    addBtnPrintPdf(form, newRec, arrBtnPrint, 'custpage_print_po', 'Purchase Order', 'scv_print_po');
                     break;
                 case "vendorreturnauthorization":
                     addBtnPrintPdf(form, newRec, arrBtnPrint, 'custpage_vra_print', 'VRA Print', 'scv_vra_print');
