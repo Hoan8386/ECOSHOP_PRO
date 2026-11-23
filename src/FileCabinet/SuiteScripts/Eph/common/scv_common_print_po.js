@@ -19,7 +19,7 @@ function(
 
         let objLine = getDataLine(rec);
         let imgFooterUrl = file.load("../assets/scv_footer_pdf_eco.png").url;
-        // log.error("imgFooterUrl", imgFooterUrl);
+        log.error("imgFooterUrl", imgFooterUrl);
         renderer.addCustomDataSource({
             format: render.DataSource.OBJECT,
             alias: "jsonData",

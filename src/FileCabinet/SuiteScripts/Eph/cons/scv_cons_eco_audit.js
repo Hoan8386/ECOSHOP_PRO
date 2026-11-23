@@ -32,6 +32,9 @@ define([
             'customrecord_scv_po_trans_code_map', 'customrecord_scv_ito_trans_code_map'
         ];
 
+        const MAX_CHARACTER_LIMIT = 1000000;
+        const NOTI_LIMIT_EXCEEDED = "Dữ liệu vượt quá 1,000,000 ký tự. Hệ thống chỉ lưu 100 dòng đầu tiên (Data exceeds 1,000,000 characters limit. Displaying first 100 records only).";
+
         const getDataEconnectAuditToDelete = () => {
             let overdue_date = getOverdueDate();
             if(!overdue_date) return {overdue_date: null, records: []};
@@ -145,10 +148,26 @@ define([
             return arrResult;
         }
 
+        const truncatePayloadIfExceeded = (data) => {
+            let dataStr = data ? (typeof data === "string" ? data : JSON.stringify(data)) : "";
+            if (dataStr && dataStr.length > MAX_CHARACTER_LIMIT) {
+                if (typeof data === "string") {
+                    try { data = JSON.parse(data); } catch (e) {}
+                }
+                if (Array.isArray(data?.details)) {
+                    data.details = data.details.slice(0, 100);
+                }
+                data.noti = NOTI_LIMIT_EXCEEDED;
+                dataStr = JSON.stringify(data);
+            }
+            return dataStr;
+        };
+
         const createEconnectAudit = ({
             name = "",
             custrecord_scv_eco_audit_url = "", 
             custrecord_scv_eco_audit_issuccess = "",
+            custrecord_scv_eco_audit_intqueue = "",
             custrecord_scv_eco_audit_recordtype = "", 
             custrecord_scv_eco_audit_recordid = "",
             custrecord_scv_eco_audit_reqbody = "", 
@@ -161,37 +180,15 @@ define([
             let reqBody = custrecord_scv_eco_audit_reqbody;
             let response = custrecord_scv_eco_audit_response;
 
-            // if(!!reqBody.details) {
-            //     reqBody.details = reqBody.details.slice(0, 1000);
-            // }
-            // if(!!response.details) {
-            //     response.details = response.details.slice(0, 1000);
-            // }
-
             ecoAuditRec.setValue("name", name);
             ecoAuditRec.setValue("custrecord_scv_eco_audit_url", custrecord_scv_eco_audit_url);
             ecoAuditRec.setValue("custrecord_scv_eco_audit_issuccess", custrecord_scv_eco_audit_issuccess);
+            ecoAuditRec.setValue("custrecord_scv_eco_audit_intqueue", custrecord_scv_eco_audit_intqueue);
             ecoAuditRec.setValue("custrecord_scv_eco_audit_recordtype", custrecord_scv_eco_audit_recordtype);
             ecoAuditRec.setValue("custrecord_scv_eco_audit_recordid", custrecord_scv_eco_audit_recordid);
-            try {
-                ecoAuditRec.setValue("custrecord_scv_eco_audit_reqbody", JSON.stringify(reqBody));
-            } catch (err) {
-                delete reqBody.details;
-                ecoAuditRec.setValue("custrecord_scv_eco_audit_reqbody", JSON.stringify({
-                    ...reqBody,
-                    error_details: err
-                }));
-            }
 
-            try {
-                ecoAuditRec.setValue("custrecord_scv_eco_audit_response", JSON.stringify(response));
-            } catch (err) {
-                delete response.details;
-                ecoAuditRec.setValue("custrecord_scv_eco_audit_response", JSON.stringify({
-                    ...response,
-                    error_details: err
-                }));
-            }
+            ecoAuditRec.setValue("custrecord_scv_eco_audit_reqbody", truncatePayloadIfExceeded(reqBody));
+            ecoAuditRec.setValue("custrecord_scv_eco_audit_response", truncatePayloadIfExceeded(response));
 
             let auditId = ecoAuditRec.save({enableSourcing: false, ignoreMandatoryFields: true});
             return auditId;

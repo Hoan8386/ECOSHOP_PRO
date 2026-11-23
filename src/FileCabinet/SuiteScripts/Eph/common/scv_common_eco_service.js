@@ -2457,6 +2457,16 @@ define([
                     "externalId": itemRec.getValue("custitem_dm_item_sales_qty_combo"),
                 },
                 "isLoosePick": itemRec.getValue("custitem_boc_is_loose_pick_item"),
+
+                "packingSpecification": itemRec.getValue("custitem_scv_pack_config_spec") || "",
+                "materialOrActiveIngredient": itemRec.getValue("custitem_scv_material_active_igd") || "",
+                "productPackagingMaterial": itemRec.getValue("custitem_scv_pack_mtl_contain_pdct") || "",
+                "foodContactMaterial": itemRec.getValue("custitem_scv_materialdirectcontactfood") || "",
+                "usageInstruction": itemRec.getValue("custitem_scv_use_instruction") || "",
+                "storageInstruction": itemRec.getValue("custitem_scv_storage_instruction") || "",
+                "warningInformation": itemRec.getValue("custitem_scv_warn_info") || "",
+                "ingredientDocumentRequirement": itemRec.getValue("custitem_scv_document_ingredien") || "",
+                "productDimension": itemRec.getValue("custitem_scv_dimension_product") || "",
                 "isActive": !isinactive
             };
             return data;
