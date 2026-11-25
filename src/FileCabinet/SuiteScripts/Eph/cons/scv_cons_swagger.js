@@ -6,8 +6,19 @@ define([
     'N/https', 'N/runtime',
 ],
     function(
-        https, runtime, 
+        https, runtime,
     ) {
+        const AcceptType = Object.freeze({
+            Swagger: {
+                ID: "application/swagger+json",
+                NAME: "Swagger"
+            },
+            Schema: {
+                ID: "application/schema+json",
+                NAME: "Schema"
+            }
+        });
+
         const REST_API_BROWSER = "https://system.netsuite.com/help/helpcenter/en_US/APIs/REST_API_Browser/record/v1/2023.1/index.html";
 
         const RECORDS = {
@@ -93,7 +104,7 @@ define([
             return arrLinkStyle.join("\n") + "\n" + arrScript.join("\n");
         }
 
-        const callApiSwaggerMetadata = (recType) => {
+        const callApiSwaggerMetadata = (recType, acceptType = AcceptType.Swagger.ID) => {
             let accountId = runtime.accountId;
             let urlCallApi = getUrlApiBaseMetadata(accountId) + "/" + recType;
 
@@ -102,7 +113,7 @@ define([
                 method: 'GET',
                 url: urlCallApi,
                 headers: {
-                    'Accept': "application/swagger+json",
+                    'Accept': acceptType,
                 }
             });
 
@@ -113,11 +124,7 @@ define([
         }
 
         const getUrlApiBaseMetadata = (accountId) => {
-            let siteAccount = accountId;
-
-            if(siteAccount.includes("_SB1")) {
-                siteAccount = siteAccount.replace("_SB1", "-sb1");
-            }
+            const siteAccount = String(accountId || '').trim().toLowerCase().replace(/_/g, '-');
             return `https://${siteAccount}.suitetalk.api.netsuite.com/services/rest/record/v1/metadata-catalog`;
         }
 
@@ -139,6 +146,7 @@ define([
         }
 
         return {
+            AcceptType,
             REST_API_BROWSER,
             RECORDS,
 

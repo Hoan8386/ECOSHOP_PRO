@@ -5,9 +5,11 @@
  */
 define([
     'N/currentRecord',
+    '../cons/scv_cons_record.js',
 ],
 function(
     currentRecord,
+    constRecord,
 ) {
     
     /**
@@ -21,7 +23,7 @@ function(
      */
     const REST_API_BROWSER = "https://system.netsuite.com/help/helpcenter/en_US/APIs/REST_API_Browser/record/v1/2023.1/index.html";
     function pageInit(scriptContext) {
-
+        constRecord.pageInitQuickFindFieldSelect(scriptContext.currentRecord, ['custpage_rectype']);
     }
 
     /**
@@ -61,12 +63,13 @@ function(
         if(!rectype) {
             return alert("Please enter the Record Type to perform this function!");
         }
+        let acceptType = curRec.getValue("custpage_accept_type") || "application/swagger+json";
 
         let host = window.location.host;
         let isExternalUrl = host.includes("extforms.netsuite.com");
         
         let urlSearch = isExternalUrl ? curRec.getValue("custpage_exturl") : curRec.getValue("custpage_cururl");
-        let urlDC = urlSearch + `&custpage_rectype=${rectype}&isrun=T`;
+        let urlDC = urlSearch + `&custpage_rectype=${encodeURIComponent(rectype)}&custpage_accept_type=${encodeURIComponent(acceptType)}&isrun=T`;
         window.location.replace(urlDC);
     }
 

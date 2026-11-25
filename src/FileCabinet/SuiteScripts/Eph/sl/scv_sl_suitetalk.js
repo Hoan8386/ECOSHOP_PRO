@@ -4,11 +4,17 @@
  */
 define([
     'N/ui/serverWidget', 'N/runtime', 'N/ui/message', 'N/url',
-    '../cons/scv_cons_swagger.js', 
+    '../cons/scv_cons_swagger.js',
+    '../cons/scv_cons_pretty_print.js',
+    '../cons/scv_cons_scriptrecordtype.js',
+    '../cons/scv_cons_record.js',
 ],
     (
         serverWidget, runtime, message, url,
         constSwagger,
+        constPrettyPrint,
+        constScriptRecType,
+        constRecord,
     ) => {
         /**
          * Defines the Suitelet script trigger point.
@@ -55,8 +61,24 @@ define([
             let mainGrp = addFieldGroup(mainForm, "fieldgrp_main","Main");
             let custpage_rectype = mainForm.addField({
                 id: 'custpage_rectype', label: 'Record Type', container: mainGrp.id,
-                type: "text"
+                type: "select"
             });
+            const arrRecTypes = constScriptRecType.queryAllDataSource().filter(rec => !!rec.skey);
+            constRecord.initLoadFieldServer(custpage_rectype, {
+                data: arrRecTypes,
+                valueExpr: 'skey',
+                displayExpr: 'name'
+            }, true);
+
+            let custpage_accept_type = mainForm.addField({
+                id: 'custpage_accept_type', label: 'Type', container: mainGrp.id,
+                type: "select"
+            });
+            constRecord.initLoadFieldServer(custpage_accept_type, {
+                data: Object.values(constSwagger.AcceptType),
+                valueExpr: 'ID',
+                displayExpr: 'NAME'
+            }, false);
 
             let custpage_exturl = mainForm.addField({
                 id: 'custpage_exturl', label: 'External Url', container: mainGrp.id,
@@ -71,17 +93,24 @@ define([
             custpage_cururl.updateDisplayType({displayType: "hidden"});
             custpage_exturl.updateDisplayType({displayType: "hidden"});
             custpage_rectype.isMandatory = true;
+            custpage_accept_type.isMandatory = true;
             custpage_cururl.defaultValue = curUrlScript;
             custpage_exturl.defaultValue = extUrlScript;
             custpage_rectype.defaultValue = params?.custpage_rectype || "";
+            custpage_accept_type.defaultValue = params?.custpage_accept_type || constSwagger.AcceptType.Swagger.ID;
             
             return mainForm;
         }
 
         const onRenderSwaggerUI = (mainForm, params) => {
-            let response = constSwagger.callApiSwaggerMetadata(params.custpage_rectype);
+            const acceptType = params?.custpage_accept_type || constSwagger.AcceptType.Swagger.ID;
+            let response = constSwagger.callApiSwaggerMetadata(params.custpage_rectype, acceptType);
 
             if(response.code === 200) {
+                if (acceptType === constSwagger.AcceptType.Schema.ID) {
+                    return onRenderSchemaJSON(mainForm, response.body);
+                }
+
                 const objBody = constSwagger.remapSwaggerIdToInternalId(response.body);
                 let swaggerGrp = addFieldGroup(mainForm, "fieldgrp_swagger","Swagger UI");
                 let objTemplate = constSwagger.getTemplateSwaggerUI(objBody, swaggerGrp.id);
@@ -96,7 +125,7 @@ define([
                 custpage_scv_swagger_ui.defaultValue = `
                     ${objTemplate.html}
                     ${objTemplate.libaryLink}
-                    <script>window.onload = () => {${objTemplate.scriptInit}};</script>`;
+                    <script>window.addEventListener('load', () => {${objTemplate.scriptInit}});</script>`;
             } else {
                 mainForm.addPageInitMessage({
                     type: message.Type.ERROR,
@@ -104,6 +133,22 @@ define([
                     message: JSON.stringify(response.body["o:errorDetails"]),
                 });
             }
+        }
+
+        const onRenderSchemaJSON = (mainForm, resBody) => {
+            let schemaGrp = addFieldGroup(mainForm, "fieldgrp_schema", "Schema JSON");
+            let objTemplate = constPrettyPrint.getTemplatePrettyPrint(resBody, schemaGrp.id);
+            let custpage_scv_schema_json = mainForm.addField({
+                id: 'custpage_scv_schema_json', label: 'Schema JSON',
+                type: "inlinehtml",
+                container: schemaGrp.id,
+            });
+            custpage_scv_schema_json.updateBreakType({breakType: "startrow"});
+
+            custpage_scv_schema_json.defaultValue = `
+                ${objTemplate.html}
+                ${objTemplate.libaryLink}
+                <script>window.addEventListener('load', () => {${objTemplate.scriptInit}});</script>`;
         }
 
         function addFieldGroup(_form, _id,_label){
